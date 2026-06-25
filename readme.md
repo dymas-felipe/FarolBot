@@ -1,4 +1,4 @@
-# Farol Bot - API Octakit do Github para manipulação de Issue
+<h1>Farol Bot - API Octakit do Github para manipulação de Issue</h1>
 
 
 ## CONFIGURAÇÃO DO DISCORD
