@@ -9,8 +9,7 @@
 import "./loadEnv.js";
 
 import { Client, Collection, GatewayIntentBits, Events } from "discord.js";
-import criarIssue from "./commands/criarIssue.js";
-import listarIssues from "./commands/listarIssues.js";
+import { carregarComandos } from "./utils/carregarComandos.js";
 
 const { DISCORD_TOKEN } = process.env;
 
@@ -27,11 +26,18 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds],
 });
 
-// Collection mapeia nome do comando -> módulo do comando, permitindo
-// adicionar novos comandos no futuro sem precisar tocar no index.js.
+// Collection mapeia nome do comando -> módulo do comando. Os comandos
+// são carregados automaticamente a partir da pasta commands/ — basta
+// criar um novo arquivo .js ali para que ele seja registrado aqui sem
+// precisar editar este arquivo.
 client.commands = new Collection();
-client.commands.set(criarIssue.data.name, criarIssue);
-client.commands.set(listarIssues.data.name, listarIssues);
+
+const comandosCarregados = await carregarComandos();
+for (const comando of comandosCarregados) {
+  client.commands.set(comando.data.name, comando);
+}
+
+console.log(`📦 ${comandosCarregados.length} comando(s) carregado(s): ${comandosCarregados.map((c) => c.data.name).join(", ")}`);
 
 // Disparado uma vez quando o bot termina de logar com sucesso.
 client.once(Events.ClientReady, (readyClient) => {

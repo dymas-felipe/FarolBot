@@ -14,8 +14,7 @@
 import "./loadEnv.js";
 
 import { REST, Routes } from "discord.js";
-import criarIssue from "./commands/criarIssue.js";
-import listarIssues from "./commands/listarIssues.js";
+import { carregarComandos } from "./utils/carregarComandos.js";
 
 const { DISCORD_TOKEN, CLIENT_ID, GUILD_ID } = process.env;
 
@@ -29,7 +28,8 @@ if (!DISCORD_TOKEN || !CLIENT_ID || !GUILD_ID) {
 
 // Cada comando exporta sua definição em `data` (SlashCommandBuilder).
 // O .toJSON() converte para o formato que a API do Discord espera.
-const commands = [criarIssue.data.toJSON(), listarIssues.data.toJSON()];
+const comandosCarregados = await carregarComandos();
+const commands = comandosCarregados.map((comando) => comando.data.toJSON());
 
 const rest = new REST().setToken(DISCORD_TOKEN);
 
